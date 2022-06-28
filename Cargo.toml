@@ -1,0 +1,29 @@
+[package]
+name = "debugoff"
+version = "0.1.0"
+edition = "2021"
+description = "Linux anti-debugging library"
+documentation = "https://docs.rs/debugoff"
+readme = "README.md"
+authors = ["0xor0ne"]
+license = "BSD-2-Clause"
+homepage = "https://github.com/0xor0ne/debugoff"
+repository = "https://github.com/0xor0ne/debugoff"
+keywords = ["debugging", "anti-debugging", "anti-analysis", "obfuscation"]
+categories = ["development-tools"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+crunchy = "0.2"
+const-random = "0.1"
+unroll = "0.1"
+goldberg = { version = "0.1", optional = true }
+
+[features]
+obfuscate = ["goldberg"]
+
+[profile.release]
+debug = false
+strip = "symbols"
+panic = "abort"
