@@ -23,27 +23,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//! Rust anti-analysis library for making static and dynamic (debugging) analysis more difficult.
+//! ## Linux anti-analysis Rust library
 //!
-//! The library targets Linux environments.
+//! The goal of this library is to make both static and dynamic (debugging) analysis more
+//! difficult.
 //!
-//! It is currently based on `ptrace` anti-analysis trick and has the following features:
+//! **The library targets Linux environments.**
+//!
+//! It is currently based on `ptrace` anti-analysis trick and provides the following main features:
 //!
 //! * Direct syscall invocation without relying on libc (this makes LD_PRELOAD bypass mechanism
 //! ineffective);
+//!
 //! * Multiple `ptrace` syscall invocations. Each call to `ptrace` must return the expected value
-//! and contributes to the computation of an "`offset`" value that, at the end of the call chain,
-//! must match an expected value (see [here](https://seblau.github.io/posts/linux-anti-debugging));
+//! (i.e., 0 at the first invocation and -1 thereafter) and contributes to the computation of an
+//! "`offset`" value that, at the end of the `ptrace` call chain, must match an expected value (see
+//! [here](https://seblau.github.io/posts/linux-anti-debugging)). If ptrace returns an unexpcted
+//! value or the "`offset`" value does not match, the process is terminated;
+//!
 //! * 'ptrace' is called in nested loops. The loops are unrolled and the number of iterations is
-//! randomized at each compilation. Also the `"offset`" value is radomized at each iteration;
-//! * The produced code can be obfuscated even more by enabling the `obfuscate` feature which
+//! randomized at each compilation. Moreover, also the "`offset`" value is radomized at each
+//! iteration;
+//!
+//! * The generated code can be obfuscated even more by enabling the `obfuscate` feature which
 //! relies on [goldberg crate](https://crates.io/crates/goldberg);
 //!
 //!
-//! Overall, this is not the final solution against static and dynamic analysis but for sure it
-//! is going to make the reverser/analyst life a little bit more difficult.
-//!
-//! to use the crate, add it to your dependencies:
+//! To use the crate, add it to your dependencies:
 //!
 //! ```text
 //! [dependencies]
@@ -54,11 +60,10 @@
 //! each time. Something like this:
 //!
 //! ```text
-//! cargo clean
-//! cargo build --release
+//! cargo clean && cargo build --release
 //! ```
 //!
-//! Also, it would be a good idea to build the project without symbols:
+//! Stripping symbols from the release build is also a good idea:
 //!
 //! ```text
 //! [profile.release]
@@ -69,10 +74,14 @@
 //!
 //! ## Usage Example
 //!
+//! In the example below, `debugoff` is used only when the target OS is Linux  and only for release
+//! builds (in this way when the code is compiled in debug mode it can be debugged without the need
+//! to bypass `debugoff`).
+//!
 //! ```rust
 //! // Include only for Linux and when building in release mode
 //! #[cfg(target_os = "linux")]
-//! #[cfg(not(debug_assertions))]
+//! #[cfg(not(debug_assertions))] 
 //! use debugoff;
 //! use std::time::SystemTime;
 //!
@@ -82,13 +91,8 @@
 //! #[cfg(not(debug_assertions))]
 //! debugoff::multi_ptraceme_or_die();
 //!
-//! println!(
-//!     "Time: {}",
-//!     SystemTime::now()
-//!         .duration_since(SystemTime::UNIX_EPOCH)
-//!         .unwrap()
-//!         .as_millis()
-//! );
+//! println!( "Time: {}", SystemTime::now() .duration_since(SystemTime::UNIX_EPOCH)
+//!     .unwrap().as_millis());
 //!
 //! // Call only for Linux and when building in release mode
 //! #[cfg(target_os = "linux")]

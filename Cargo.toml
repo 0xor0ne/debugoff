@@ -1,8 +1,8 @@
 [package]
 name = "debugoff"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
-description = "Linux anti-debugging library"
+description = "Linux anti-analysis and anti-debugging Rust library"
 documentation = "https://docs.rs/debugoff"
 readme = "README.md"
 authors = ["0xor0ne"]

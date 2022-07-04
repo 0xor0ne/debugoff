@@ -169,7 +169,7 @@ fn ptraceme() -> Result<(), crate::DebugOffErr> {
     }
 }
 
-/// Call `ptrace(PTRACE_TRACEME, ...)` to detect the presence of a debugger.
+/// Call `ptrace(PTRACE_TRACEME, ...)` one time to detect the presence of a debugger.
 ///
 /// This function can be called multiple times.
 ///
