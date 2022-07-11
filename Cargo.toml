@@ -1,12 +1,12 @@
 [package]
 name = "debugoff"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 description = "Linux anti-analysis and anti-debugging Rust library"
 documentation = "https://docs.rs/debugoff"
 readme = "README.md"
 authors = ["0xor0ne"]
-license = "BSD-2-Clause"
+license = "GPL-3.0 OR MIT"
 homepage = "https://github.com/0xor0ne/debugoff"
 repository = "https://github.com/0xor0ne/debugoff"
 keywords = ["debugging", "anti-debugging", "anti-analysis", "obfuscation"]
