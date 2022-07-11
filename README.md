@@ -158,8 +158,16 @@ other cases the resulting function graph could be simpler than the one reported
 in the example but, in any case, more complex than the one generated when
 `DebugOff` is not used.
 
+## License
+
+Licensed under:
+
+* GPL-3.0 when `obfuscate` feature is enabled;
+* MIT when `obfuscate` feature **IS NOT** enabled;
 
 ## TODOs
 
 * Syscall obfuscation;
 * Deterministic builds;
+* Remove dependency from goldberg by implemeing internal obfuscation
+  functionalities in order to remove GPL-3.0 license requirement;
