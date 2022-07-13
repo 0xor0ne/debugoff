@@ -38,6 +38,8 @@
 //
 // All temporary registers are clobbered (8-15, 24-25).
 use super::syscalls::SysNo;
+#[cfg(feature = "syscallobf")]
+use const_random::const_random;
 use core::arch::asm;
 
 /// Issues a raw system call with 1 arguments.
@@ -46,6 +48,7 @@ use core::arch::asm;
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
+#[cfg(not(feature = "syscallobf"))]
 #[inline(always)]
 pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
     let mut err: usize;
@@ -81,10 +84,88 @@ pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
+#[cfg(not(feature = "syscallobf"))]
 #[inline(always)]
 pub unsafe fn syscall4(n: SysNo, arg1: usize, arg2: usize, arg3: usize, arg4: usize) -> usize {
     let mut err: usize;
     let mut ret: usize;
+    asm!(
+        "syscall",
+        inlateout("$2") n as usize => ret,
+        in("$4") arg1,
+        in("$5") arg2,
+        in("$6") arg3,
+        // $7 is now used for both input and output.
+        inlateout("$7") arg4 => err,
+        // All temporary registers are always clobbered
+        lateout("$8") _,
+        lateout("$9") _,
+        lateout("$10") _,
+        lateout("$11") _,
+        lateout("$12") _,
+        lateout("$13") _,
+        lateout("$14") _,
+        lateout("$15") _,
+        lateout("$24") _,
+        lateout("$25") _,
+        options(nostack, preserves_flags)
+    );
+    if err == 0 {
+        ret
+    } else {
+        ret.wrapping_neg()
+    }
+}
+
+/// Issues a raw obfuscated system call with 1 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
+#[cfg(feature = "syscallobf")]
+#[inline(always)]
+pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
+    let mut err: usize;
+    let mut ret: usize;
+    let _key: usize = const_random!(usize);
+    asm!(
+        "syscall",
+        inlateout("$2") n as usize => ret,
+        lateout("$7") err,
+        in("$4") arg1,
+        // All temporary registers are always clobbered
+        lateout("$8") _,
+        lateout("$9") _,
+        lateout("$10") _,
+        lateout("$11") _,
+        lateout("$12") _,
+        lateout("$13") _,
+        lateout("$14") _,
+        lateout("$15") _,
+        lateout("$24") _,
+        lateout("$25") _,
+        options(nostack, preserves_flags)
+    );
+    if err == 0 {
+        ret
+    } else {
+        ret.wrapping_neg()
+    }
+}
+
+/// Issues a raw obfuscated system call with 4 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
+#[cfg(feature = "syscallobf")]
+#[inline(always)]
+pub unsafe fn syscall4(n: SysNo, arg1: usize, arg2: usize, arg3: usize, arg4: usize) -> usize {
+    let mut err: usize;
+    let mut ret: usize;
+    let _key: usize = const_random!(usize);
     asm!(
         "syscall",
         inlateout("$2") n as usize => ret,

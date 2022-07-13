@@ -63,7 +63,7 @@
 //! ```rust
 //! // Include only for Linux and when building in release mode
 //! #[cfg(target_os = "linux")]
-//! #[cfg(not(debug_assertions))] 
+//! #[cfg(not(debug_assertions))]
 //! use debugoff;
 //! use std::time::SystemTime;
 //!

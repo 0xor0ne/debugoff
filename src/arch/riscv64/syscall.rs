@@ -17,6 +17,8 @@
 //
 // No other registers are clobbered.
 use super::syscalls::SysNo;
+#[cfg(feature = "syscallobf")]
+use const_random::const_random;
 use core::arch::asm;
 
 /// Issues a raw system call with 1 arguments.
@@ -25,6 +27,7 @@ use core::arch::asm;
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
+#[cfg(not(feature = "syscallobf"))]
 #[inline(always)]
 pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
     let mut ret: usize;
@@ -43,9 +46,53 @@ pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
 ///
 /// Running a system call is inherently unsafe. It is the caller's
 /// responsibility to ensure safety.
+#[cfg(not(feature = "syscallobf"))]
 #[inline(always)]
 pub unsafe fn syscall4(n: SysNo, arg1: usize, arg2: usize, arg3: usize, arg4: usize) -> usize {
     let mut ret: usize;
+    asm!(
+        "ecall 0",
+        in("a7") n as usize,
+        inlateout("a0") arg1 => ret,
+        in("a1") arg2,
+        in("a2") arg3,
+        in("a3") arg4,
+        options(nostack, preserves_flags)
+    );
+    ret
+}
+
+/// Issues a raw obfuscated system call with 1 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
+#[cfg(feature = "syscallobf")]
+#[inline(always)]
+pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
+    let mut ret: usize;
+    let _key: usize = const_random!(usize);
+    asm!(
+        "ecall 0",
+        in("a7") n as usize,
+        inlateout("a0") arg1 => ret,
+        options(nostack, preserves_flags)
+    );
+    ret
+}
+
+/// Issues a raw obfuscated system call with 4 arguments.
+///
+/// # Safety
+///
+/// Running a system call is inherently unsafe. It is the caller's
+/// responsibility to ensure safety.
+#[cfg(feature = "syscallobf")]
+#[inline(always)]
+pub unsafe fn syscall4(n: SysNo, arg1: usize, arg2: usize, arg3: usize, arg4: usize) -> usize {
+    let mut ret: usize;
+    let _key: usize = const_random!(usize);
     asm!(
         "ecall 0",
         in("a7") n as usize,
