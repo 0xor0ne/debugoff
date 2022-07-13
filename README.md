@@ -14,6 +14,9 @@ main features:
 * Direct syscall invocation without relying on libc (this makes LD_PRELOAD
   bypass mechanism ineffective);
 
+* System call obfuscation which makes static reverse engineering more difficult
+  (this feature is currently supported only in `x86_64`);
+
 * Multiple `ptrace` syscall invocations. Each call to `ptrace` must return the
   expected value (i.e., 0 at the first invocation and -1 thereafter) and
   contributes to the computation of an "`offset`" value that, at the end of the
@@ -33,7 +36,16 @@ To use the crate, add it to your dependencies:
 
 ```text
 [dependencies]
-debugoff = { version = "0.1.0, features = ["obfuscate"] }
+debugoff = { version = "0.2.1, features = ["obfuscate"] }
+```
+
+For enabling also system call obfuscation, use the `syscallobf` feature (this is
+an experimental feature and affect only binaries targeting `x86_64`
+architecture):
+
+```text
+[dependencies]
+debugoff = { version = "0.2.1, features = ["obfuscate", "syscallobf"] }
 ```
 
 Given that the library generates random code at each compilation, be sure to
@@ -89,7 +101,12 @@ fn main() {
 }
 ```
 
-See other examples in the [examples directory](./examples).
+See other examples in the [examples directory](./examples) which can be built
+with:
+
+```bash
+cargo build --release --features obfuscate,syscallobf --examples
+```
 
 ## Obfuscation example
 

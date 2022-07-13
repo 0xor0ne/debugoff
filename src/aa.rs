@@ -190,7 +190,11 @@ pub fn ptraceme_or_die() {
                 Ok(_) => aa.ptrace_state.traceme_done = true,
                 Err(_) => the_end(),
             },
-            true => if res.is_ok() { the_end() },
+            true => {
+                if res.is_ok() {
+                    the_end()
+                }
+            }
         }
 
         goldberg_stmts! {
@@ -207,7 +211,11 @@ pub fn ptraceme_or_die() {
                 Ok(_) => aa.ptrace_state.traceme_done = true,
                 Err(_) => the_end(),
             },
-            true => if res.is_ok() { the_end() },
+            true => {
+                if res.is_ok() {
+                    the_end()
+                }
+            }
         }
 
         aa.ptrace_state.traceme_ctr = aa.ptrace_state.traceme_ctr.saturating_add(1);
