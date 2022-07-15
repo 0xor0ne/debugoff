@@ -184,7 +184,8 @@ Licensed under:
 
 ## TODOs
 
-* Syscall obfuscation;
+* Implement syscall obfuscation for other architectures (for not syscall
+  obfuscation is supported only for `x86_64`);
 * Deterministic builds;
 * Remove dependency from goldberg by implemeing internal obfuscation
   functionalities in order to remove GPL-3.0 license requirement;
