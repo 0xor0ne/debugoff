@@ -34,8 +34,12 @@ use core::arch::asm;
 pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
     let mut ret: usize;
     asm!(
+        // related to https://github.com/rust-lang/rust/issues/85056
+        // "svc 0",
+        // in("r7") n as usize,
+        "mov r7, r8",
         "svc 0",
-        in("r7") n as usize,
+        in("r8") n as usize,
         inlateout("r0") arg1 => ret,
         options(nostack, preserves_flags)
     );
@@ -53,8 +57,12 @@ pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
 pub unsafe fn syscall4(n: SysNo, arg1: usize, arg2: usize, arg3: usize, arg4: usize) -> usize {
     let mut ret: usize;
     asm!(
+        // related to https://github.com/rust-lang/rust/issues/85056
+        // "svc 0",
+        // in("r7") n as usize,
+        "mov r7, r8",
         "svc 0",
-        in("r7") n as usize,
+        in("r8") n as usize,
         inlateout("r0") arg1 => ret,
         in("r1") arg2,
         in("r2") arg3,
@@ -76,8 +84,12 @@ pub unsafe fn syscall1(n: SysNo, arg1: usize) -> usize {
     let mut ret: usize;
     let _key: usize = const_random!(usize);
     asm!(
+        // related to https://github.com/rust-lang/rust/issues/85056
+        // "svc 0",
+        // in("r7") n as usize,
+        "mov r7, r8",
         "svc 0",
-        in("r7") n as usize,
+        in("r8") n as usize,
         inlateout("r0") arg1 => ret,
         options(nostack, preserves_flags)
     );
@@ -96,8 +108,12 @@ pub unsafe fn syscall4(n: SysNo, arg1: usize, arg2: usize, arg3: usize, arg4: us
     let mut ret: usize;
     let _key: usize = const_random!(usize);
     asm!(
+        // related to https://github.com/rust-lang/rust/issues/85056
+        // "svc 0",
+        // in("r7") n as usize,
+        "mov r7, r8",
         "svc 0",
-        in("r7") n as usize,
+        in("r8") n as usize,
         inlateout("r0") arg1 => ret,
         in("r1") arg2,
         in("r2") arg3,
