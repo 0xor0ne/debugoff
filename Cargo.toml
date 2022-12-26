@@ -1,6 +1,6 @@
 [package]
 name = "debugoff"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "Linux anti-analysis and anti-debugging Rust library"
 documentation = "https://docs.rs/debugoff"
